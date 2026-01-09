@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Sites sportifs emblématiques</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+
+<h1>Sites sportifs emblématiques</h1>
+
+<ul>
+    {% for site in page_obj %}
+        <li>
+            <a href="{% url 'site_detail' site.id %}">
+                <strong>{{ site.nom }}</strong>
+            </a><br>
+            {{ site.commune }} ({{ site.departement }})
+        </li>
+    {% empty %}
+        <li>Aucun site trouvé.</li>
+    {% endfor %}
+</ul>
+
+<!-- Pagination -->
+<div>
+    {% if page_obj.has_previous %}
+        <a href="?page={{ page_obj.previous_page_number }}">← Précédent</a>
+    {% endif %}
+
+    <span>
+        Page {{ page_obj.number }} sur {{ page_obj.paginator.num_pages }}
+    </span>
+
+    {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}">Suivant →</a>
+    {% endif %}
+</div>
+
+</body>
+</html>

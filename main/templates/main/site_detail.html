@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ site.nom }}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link
+        rel="stylesheet"
+        href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    />
+
+    <script
+        src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
+    </script>
+
+</head>
+<body>
+
+<a href="{% url 'home' %}">← Retour à l’accueil</a>
+
+<h1>{{ site.nom }}</h1>
+
+<p><strong>Commune :</strong> {{ site.commune }}</p>
+<p><strong>Département :</strong> {{ site.departement }}</p>
+<p><strong>Adresse :</strong> {{ site.adresse }}</p>
+{% if site.latitude and site.longitude %}
+<h2>Localisation</h2>
+<div id="map" style="height: 400px; width: 100%;"></div>
+{% endif %}
+
+{% if site.datation %}
+<p><strong>Datation :</strong> {{ site.datation }}</p>
+{% endif %}
+
+{% if site.credits %}
+<p><strong>Crédits :</strong> {{ site.credits }}</p>
+{% endif %}
+
+{% if site.description %}
+<h2>Description</h2>
+<p>{{ site.description }}</p>
+{% endif %}
+
+<h2>Typologies</h2>
+<ul>
+    {% for t in site.typologies.all %}
+        <li>{{ t.nom }}</li>
+    {% empty %}
+        <li>Aucune typologie</li>
+    {% endfor %}
+</ul>
+
+<h2>Dénominations</h2>
+<ul>
+    {% for d in site.denominations.all %}
+        <li>{{ d.nom }}</li>
+    {% empty %}
+        <li>Aucune dénomination</li>
+    {% endfor %}
+</ul>
+
+<h2>Dates de référence</h2>
+<ul>
+    {% for d in site.dates_reference.all %}
+        <li>{{ d.valeur }}</li>
+    {% empty %}
+        <li>Aucune date</li>
+    {% endfor %}
+</ul>
+
+{% if site.olympiade %}
+<p><strong>Site olympique :</strong> {{ site.olympiade.nom }}</p>
+{% endif %}
+
+{% if site.url_image %}
+<img src="{{ site.url_image }}" alt="{{ site.nom }}" style="max-width: 100%;">
+{% endif %}
+
+{% if site.latitude and site.longitude %}
+<script>
+  const lat = {{ site.latitude }};
+  const lon = {{ site.longitude }};
+
+  const map = L.map('map').setView([lat, lon], 15);
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; OpenStreetMap contributors'
+  }).addTo(map);
+
+  L.marker([lat, lon]).addTo(map)
+    .bindPopup("{{ site.nom|escapejs }}")
+    .openPopup();
+</script>
+{% endif %}
+
+</body>
+</html>
